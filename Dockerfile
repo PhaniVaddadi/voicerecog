@@ -3,7 +3,7 @@ FROM python:3.7
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip3 install -r requirements.txt
-RUN sudo apt install ffmpeg
+RUN apt install ffmpeg
 RUN pip3 install SoundFile
 RUN pip3 install -U scikit-learn scipy matplotlib
 
