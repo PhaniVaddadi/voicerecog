@@ -4,8 +4,6 @@ COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 
-RUN apt-get update ; apt-get install -y git build-essential gcc make yasm autoconf automake cmake libtool checkinstall libmp3lame-dev pkg-config libunwind-dev zlib1g-dev libssl-dev
-
 RUN apt-get update \
     && apt-get clean \
     && apt-get install -y --no-install-recommends libc6-dev libgdiplus wget software-properties-common
