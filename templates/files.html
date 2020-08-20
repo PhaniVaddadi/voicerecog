@@ -50,7 +50,7 @@
 
                 </div>
               
-                <center><div id='dia'></div></center>
+                <center><div id='diarization'>Thanks for Uploading. File in Process .</div></center>
                 <center><p>{{ info }}</p></center>
                 <p><center>{{ message }}</center>
                 <center><form method='POST' action='/analyze_file'>
@@ -98,25 +98,23 @@
               </div>
               <script src="https://code.jquery.com/jquery-1.9.1.min.js" integrity="sha256-wS9gmOZBqsqWxgIVgA8Y9WcQOa7PgSIX+rPA0VL2rbQ=" crossorigin="anonymous"></script>
               <script>
-                /*$(document).ready( function(){
-                      $('#diarization').load('/diarization');
-                      refresh();
-                      });
-                       function refresh()
-                          {
-                            setTimeout( function() {
-                              $('#diarization').fadeOut('slow').load('/diarization').fadeIn('slow');
-                              refresh();
-                            }, 2000);
-                          }*/
+
+                
+                $.ajax({
+                  url:'/dia'
+                })
                 $(document).ready( function(){
+                      $('#diarization').fadeOut('slow').load('/diarization').fadeIn('slow');
+                      });
+                      
+                /*$(document).ready( function(){
                       $('#dia').fadeOut('slow').load('/message').fadeIn('slow');
                       console.log($('#dia'))
                       });
                  $(document).ready( function(){
                       $('#dia').fadeOut('slow').load('/dia').fadeIn('slow');
                       console.log($('#dia'))
-                      });
+                      });*/
                 /* $(document).ready( function(){
                 $('#visualize1').load('/visualize1')[0].src = 'static/index.png';
                 $('#visualize2').load('/visualize2')[0].src = 'static/index.png';

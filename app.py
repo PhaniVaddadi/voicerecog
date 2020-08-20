@@ -2,7 +2,7 @@
 Author: Tushar Goel
 
 '''
-from flask import Flask, render_template, session, request,Response,redirect
+from flask import Flask, render_template, session, request,Response,redirect,url_for
 from flask_socketio import SocketIO, emit, disconnect
 from werkzeug.utils import secure_filename
 import scipy.io.wavfile
@@ -10,7 +10,6 @@ import numpy as np
 from collections import OrderedDict
 import sys,os
 import numpy as np
-
 import json
 from datetime import datetime
 import random
@@ -91,11 +90,6 @@ def visualize1():
 
 		df['scores'] = lis
 
-		'''plt.plot(df[df['category']=='Positive']['time'],df[df['category']=='Positive']['freq'],'g',label='Positive')
-								plt.plot(df[df['category']=='Negative']['time'],df[df['category']=='Negative']['freq'],'r',label = 'Negative')
-								plt.plot(df[df['category']=='Neutral']['time'],df[df['category']=='Neutral']['freq'],'b',label='Neutral')
-						'''
-
 		x = df['time']
 		y = df['freq']
 		cmap = ListedColormap(['r', 'b', 'g'])
@@ -150,10 +144,7 @@ def visualize2():
 
 		df['scores'] = lis
 
-		'''plt.plot(df[df['category']=='Positive']['time'],df[df['category']=='Positive']['freq'],'g',label='Positive')
-								plt.plot(df[df['category']=='Negative']['time'],df[df['category']=='Negative']['freq'],'r',label = 'Negative')
-								plt.plot(df[df['category']=='Neutral']['time'],df[df['category']=='Neutral']['freq'],'b',label='Neutral')
-						'''
+		
 
 		s = ['Negative','Neutral','Positive']
 		a = [(0+lis.count(-1))*100/len(lis),(0+lis.count(0))*100/len(lis),(0+lis.count(1))*100/len(lis)]
@@ -196,10 +187,6 @@ def visualize3():
 
 		df['scores'] = lis
 
-		'''plt.plot(df[df['category']=='Positive']['time'],df[df['category']=='Positive']['freq'],'g',label='Positive')
-								plt.plot(df[df['category']=='Negative']['time'],df[df['category']=='Negative']['freq'],'r',label = 'Negative')
-								plt.plot(df[df['category']=='Neutral']['time'],df[df['category']=='Neutral']['freq'],'b',label='Neutral')
-						'''
 		s = ['Negative','Neutral','Positive']
 		a = [0+lis.count(-1),0+lis.count(0),0+lis.count(1)]
 		plt.pie(a,labels=s,colors=['r','b','g'],labeldistance=None)
@@ -246,11 +233,6 @@ def stop(file = False):
 				lis.append(0)
 
 		df['scores'] = lis
-
-		'''plt.plot(df[df['category']=='Positive']['time'],df[df['category']=='Positive']['freq'],'g',label='Positive')
-								plt.plot(df[df['category']=='Negative']['time'],df[df['category']=='Negative']['freq'],'r',label = 'Negative')
-								plt.plot(df[df['category']=='Neutral']['time'],df[df['category']=='Neutral']['freq'],'b',label='Neutral')
-						'''
 
 		x = df['time']
 		y = df['freq']
@@ -323,11 +305,6 @@ def visualizer(file):
 
 		df['scores'] = lis
 
-		'''plt.plot(df[df['category']=='Positive']['time'],df[df['category']=='Positive']['freq'],'g',label='Positive')
-								plt.plot(df[df['category']=='Negative']['time'],df[df['category']=='Negative']['freq'],'r',label = 'Negative')
-								plt.plot(df[df['category']=='Neutral']['time'],df[df['category']=='Neutral']['freq'],'b',label='Neutral')
-						'''
-
 		x = df['time']
 		y = df['freq']
 		cmap = ListedColormap(['r', 'b', 'g'])
@@ -386,7 +363,9 @@ def visualizer(file):
 def upload_file():
 	global uploaded_file
 	global n_speakers
+	global diar
 
+	diar = True
 	if request.method == 'POST':
 		
 		# check if the post request has the file part
@@ -458,36 +437,23 @@ def analyze_file():
 	
 	return render_template('files.html',speaker = 0)
 
-@app.route('/diarization')
-def diarization():
-	global diar
-	global uploaded_file
-	global n_speakers
-
-	if diar:
-			# print(diar,uploaded_file,n_speakers)
-		uploaded_file_new_name = uploaded_file.split('.')[0]+'_dsw_formatted.wav'
-		if not os.path.exists(uploaded_file_new_name):
-
-			os.system(f'ffmpeg -i {uploaded_file} -ac 1 -ar 16000 {uploaded_file_new_name}')
-			uploaded_file = uploaded_file_new_name
-
-		else:
-			print('File Already formatted')
-			uploaded_file = uploaded_file_new_name
-		diar = False
-		
-		
-		return 'Diarization in Process'
-	elif diar == False:
-		return 'Diarization in Process'
-	elif diar == None:
-		return 'Enter the Speaker No'
 no_of_speaker = 2
 info = ''
 @app.route('/message')
 def mess():
-	return 'Thanks for Uploading. File is in Process.'
+	return 'File in Process'
+@app.route('/diarization')
+def diarization():
+	global diar
+	global info
+
+	no_of_speaker = label()
+	a = len(no_of_speaker)
+	s = ','.join(str(int(sp)+1) for sp in sorted(no_of_speaker))
+	diar = False
+	info  = f'{ a } speaker Identified. Type 0 for whole Audio Visualization or Choose Speaker no from {s} for Respective Speaker sentiment and Click on Show button'
+	return f'{ a } speaker Identified. Type 0 for whole Audio Visualization or Choose Speaker no from {s} for Respective Speaker sentiment and Click on Show button'
+
 @app.route('/dia')
 def clustering():
 	global diar
@@ -506,12 +472,7 @@ def clustering():
 			print('File Already formatted')
 			uploaded_file = uploaded_file_new_name
 		dia(uploaded_file,n_speakers)
-		no_of_speaker = label()
-		a = len(no_of_speaker)
-		s = ','.join(str(int(sp)+1) for sp in sorted(no_of_speaker))
-		diar = False
-		info  = f'{ a } speaker Identified. Type 0 for whole Audio Visualization or Choose Speaker no from {s} for Respective Speaker sentiment and Click on Show button'
-		return f'{ a } speaker Identified. Type 0 for whole Audio Visualization or Choose Speaker no from {s} for Respective Speaker sentiment and Click on Show button'
+		diar=None
 	#result,result1,result2 = visualizer(os.path.join(app.config['UPLOAD_FOLDER'],'result.txt'))
 '''
 	'''
@@ -582,4 +543,4 @@ def test_disconnect():
 	print('Client disconnected', request.sid)
 
 if __name__ == '__main__':
-	socketio.run(app, host='0.0.0.0', debug=True)
+	socketio.run(app,host='0.0.0.0',debug=True)
