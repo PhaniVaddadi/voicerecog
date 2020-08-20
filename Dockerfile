@@ -12,7 +12,7 @@ RUN apt-get update \
 
 RUN wget https://www.ffmpeg.org/releases/ffmpeg-4.0.2.tar.gz
 RUN tar -xzf ffmpeg-4.0.2.tar.gz; rm -r ffmpeg-4.0.2.tar.gz
-RUN cd ./ffmpeg-4.0.2; ./configure --enable-gpl --enable-libmp3lame --enable-decoder=mjpeg,png --enable-encoder=png --enable-openssl --enable-nonfree
+RUN cd ./ffmpeg-4.0.2;
 
 
 RUN cd ./ffmpeg-4.0.2; make
