@@ -3,7 +3,11 @@ FROM python:3.7
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip3 install -r requirements.txt
-RUN pip3 install ffmpeg-python
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-add-repository ppa:mc3man/trusty-media
+RUN apt-get update
+RUN apt-get install -y ffmpeg
 RUN pip3 install SoundFile
 RUN pip3 install -U scikit-learn scipy matplotlib
 
