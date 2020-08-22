@@ -42,6 +42,9 @@ ALLOWED_EXTENSIONS = {'mp4','mp3','wav','flac'}
 #thread = None
 #thread_lock = Lock()
 diar = False
+import os
+import glob
+
 uploaded_file = ''
 import array
 import struct
@@ -58,8 +61,17 @@ def float_to_16_bit_pcm(raw_floats):
 def index():
 	from filter import main
 	session['audio'] = []
+	files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'],'*'))
+	print(files)
+	for f in files:
+		try:
+			os.remove(f)
+		except:
+			pass
 	file = open(os.path.join(app.config['UPLOAD_FOLDER'],'result.txt'),'w').close()
 	t(0)
+
+	
 	return render_template('index.html')
 
 @app.route('/analyze')
@@ -365,6 +377,15 @@ def upload_file():
 	global n_speakers
 	global diar
 
+	files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'],'*'))
+	print(files)
+	for f in files:
+		try:
+			os.remove(f)
+		except:
+			pass
+	file = open(os.path.join(app.config['UPLOAD_FOLDER'],'result.txt'),'w').close()
+	t(0)
 	diar = True
 	if request.method == 'POST':
 		
