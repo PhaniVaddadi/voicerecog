@@ -197,6 +197,7 @@ def result_writer(audio_file,emotion,result,filename,file=False):
 		global timestamp
 		if file:
 			timestamp = 0
+		file = open(filename,'w').close()
 		file = open(filename,'a')
 		n = 'Positive'
 		if emotion ==  'neutral':
