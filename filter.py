@@ -197,7 +197,6 @@ def result_writer(audio_file,emotion,result,filename,file=False):
 		global timestamp
 		if file:
 			timestamp = 0
-		file = open(filename,'w').close()
 		file = open(filename,'a')
 		n = 'Positive'
 		if emotion ==  'neutral':
@@ -296,12 +295,12 @@ def main_file(file,labels=[0,1],folder='uploads',overall=False):
 
 		# export audio chunk and save it in 
 		# the current directory. 
-		print("saving chunk{0}.wav".format(i)) 
+		print("saving {0}.wav".format(i)) 
 		# specify the bitrate to be 192 k 
-		audio_chunk.export("uploads/chunk{0}.wav".format(i), bitrate ='192k', format ="wav") 
+		audio_chunk.export("uploads/{0}.wav".format(i), bitrate ='192k', format ="wav") 
 
 		# the name of the newly created chunk 
-		audio_file = 'uploads/chunk'+str(i)+'.wav'
+		audio_file = 'uploads/'+str(i)+'.wav'
 
 		print("Processing chunk "+str(i)) 
 
