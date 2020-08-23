@@ -494,6 +494,7 @@ def clustering():
 			uploaded_file = uploaded_file_new_name
 		dia(uploaded_file,n_speakers)
 		diar=None
+		return 'Done Processing'
 	#result,result1,result2 = visualizer(os.path.join(app.config['UPLOAD_FOLDER'],'result.txt'))
 '''
 	'''
